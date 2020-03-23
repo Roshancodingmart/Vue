@@ -1,15 +1,18 @@
 <template>
-<div class="movie_main">
-     <div class="top_heading">
-        <h1>MOVIES</h1>
-    </div>
-    <div>
-        <span>Movie</span>
-    </div>
-    <div class="loader" v-if="!movies"></div>
-    <div class="movie_holder">
-        <div :key="movie.id" v-for="movie in movies" class="details">
-               <router-link :to="{name:'info',params:{id:movie.id}}"> <img :src="'https://image.tmdb.org/t/p/w300/'+movie.poster_path" alt="photo"></router-link>
+<div>
+    <Header/>
+    <div class="movie_main">
+         <div class="top_heading">
+            <h1>MOVIES</h1>
+        </div>
+        <div>
+            <span>Movie</span>
+        </div>
+        <div class="loader" v-if="!movies"></div>
+        <div class="movie_holder">
+            <div :key="movie.id" v-for="movie in movies" class="details">
+                   <router-link :to="{name:'info',params:{id:movie.id}}"> <img :src="'https://image.tmdb.org/t/p/w300/'+movie.poster_path" alt="photo"></router-link>
+            </div>
         </div>
     </div>
 </div>
@@ -17,9 +20,12 @@
 </template>
 
 <script>
-// import router from "../router/index"
+import Header from "./Header"
 export default {
   name: "movie",
+  components:{
+      Header
+  },
   data() {
     return {
         title:"Movie",

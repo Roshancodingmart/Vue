@@ -10,7 +10,7 @@
       </div>
       <div class="info_details">
         <span class="info_name" v-if="movie"
-          >{{ movie.title }}<span class="year">&nbsp;(2018)</span></span
+          >{{ movie.title }}<span class="year">&nbsp;({{movie.release_date | cutYear}})</span></span
         >
         <span class="line" v-if="movie">&nbsp;{{ movie.tagline }}</span>
         <div class="get" v-if="movie">
@@ -63,6 +63,12 @@ export default {
   methods: {
     book: function() {
       this.ticket = true;
+    }
+
+  },
+  filters:{
+    cutYear:function(value){
+      return value.slice(0,4)
     }
   },
   mounted: async function() {

@@ -23,7 +23,9 @@
       <router-link to="/bmi">BMI CALCULATOR</router-link>
 
       <hr />
-      <router-link to="/movie">Movie API</router-link>
+      <router-link to="/movie">Movies</router-link>
+      <hr>
+      <router-link to="/previous">Booked Movies </router-link>
       <hr/>
     </div>
   </div>

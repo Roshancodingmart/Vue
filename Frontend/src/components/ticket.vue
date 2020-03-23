@@ -1,184 +1,183 @@
 <template>
-  <div>
-    <div class="heading" v-if="!visible">
-      <div>
-        <h2 class="movie_title">{{ data.title }}</h2>
-      </div>
-      <div class="ticket_body">
+<div>
+  <Header/>
+    <div style="marginTop:60px">
+      <div class="heading" v-if="!visible">
         <div>
-          <button class="certificate">U</button>
-          <span class="vote">{{ data.vote_average }}/10</span>
-          <button
-            :key="tag.name"
-            v-for="tag in data.genres"
-            class="ticket_tags"
-          >
-            {{ tag.name | cap }}
-          </button>
-          <span class="release_date">{{ data.release_date }}</span>
-          <span class="ticket_runtime">{{ data.runtime | runTime }}</span>
+          <h2 class="movie_title">{{ data.title }}</h2>
         </div>
-      </div>
-    </div>
-    <div v-if="!visible">
-      <div class="ticket_date_holder">
-        <div style="background:#333545; padding:0px 14px 14px 14px;">
-          <img
-            :src="'https://image.tmdb.org/t/p/w300/' + data.poster_path"
-            alt=""
-          />
-        </div>
-        <div>
-          <div style="display:flex; padding: 20px 0px 0px 50px;">
-            <div
-              class="ticket_date"
-              :id="date.id"
-              :key="date.top"
-              v-for="date in dates"
-              @click="setDate(date)"
-            >
-              <div>{{ date.top }}</div>
-              <div>{{ date.bottom }}</div>
-            </div>
-          </div>
-          <div class="theater_list">
-            <div :key="theater" v-for="theater in theaters" id="theater">
-              {{ theater }}
-              <button
-                class="show_time"
-                :key="time"
-                v-for="time in times"
-                @click="show(theater, time)"
-              >
-                {{ time | measure(time,show_date)}}
-              </button>
-              <!-- <button class="show_time" @click="show(theater, '10:30 AM')">10:30 AM</button>
-              <button class="show_time" @click="show(theater, '2:30 PM')">2:30 PM</button>
-              <button class="show_time" @click="show(theater, '6:30 PM')">6:30 PM</button> -->
-            </div>
-          </div>
-          <div style="margin:20px 0px 0px 210px; fontSize:12px">
-            <span>Select number of tickets</span>
-          </div>
-          <div style="margin:20px 0px 0px 80px">
+        <div class="ticket_body">
+          <div>
+            <button class="certificate">U</button>
+            <span class="vote">{{ data.vote_average }}/10</span>
             <button
-              :key="tick"
-              :id="tick"
-              v-for="tick in 10"
-              class="no-of-tickets"
-              @click="ticketNo(tick)"
+              :key="tag.name"
+              v-for="tag in data.genres"
+              class="ticket_tags"
             >
-              {{ tick }}
+              {{ tag.name | cap }}
             </button>
-          </div>
-          <div style="margin:20px 0px 0px 230px;">
-            <button class="book-ticket" @click="Book()">Book</button>
+            <span class="release_date">{{ data.release_date }}</span>
+            <span class="ticket_runtime">{{ data.runtime | runTime }}</span>
           </div>
         </div>
       </div>
-    </div>
-    <div style="textAlign:center;fontWeight:bold;fontSize:24px;marginTop:50px"><span>{{ theater }}{{ time }}</span></div>
-    <div style="textAlign:center">
-       <button class="big"><span>Ticket 1-45</span><br><span>Rs:120</span></button>
-       <button class="big"><span>Ticket 46-100</span><br><span>Rs:100</span></button>
-    </div>
-    <div class="ticket_main" v-if="visible">
-      <div class="seats">
+      <div v-if="!visible">
+        <div class="ticket_date_holder">
+          <div style="background:#333545; padding:0px 14px 14px 14px;">
+            <img
+              :src="'https://image.tmdb.org/t/p/w300/' + data.poster_path"
+              alt=""
+            />
+          </div>
+          <div>
+            <div style="display:flex; padding: 20px 0px 0px 50px;">
+              <div
+                class="ticket_date"
+                :id="date.id"
+                :key="date.top"
+                v-for="date in dates"
+                @click="setDate(date)"
+              >
+                <div>{{ date.top }}</div>
+                <div>{{ date.bottom }}</div>
+              </div>
+            </div>
+            <div class="theater_list">
+              <div :key="theater" v-for="theater in theaters" id="theater">
+                {{ theater }}
+                <button v-if="check('10:15:00')" class="show_time" @click="show(theater, '10:30 AM')">10:30 AM</button>
+                <button v-if="check('14:15:00')" class="show_time" @click="show(theater, '2:30 PM')">2:30 PM</button>
+                <button v-if="check('18:15:00')" class="show_time" @click="show(theater, '6:30 PM')">6:30 PM</button>
+              </div>
+            </div>
+            <div style="margin:20px 0px 0px 210px; fontSize:12px">
+              <span>Select number of tickets</span>
+            </div>
+            <div style="margin:20px 0px 0px 80px">
+              <button
+                :key="tick"
+                :id="tick"
+                v-for="tick in 10"
+                class="no-of-tickets"
+                @click="ticketNo(tick)"
+              >
+                {{ tick }}
+              </button>
+            </div>
+            <div style="margin:20px 0px 0px 230px;">
+              <button class="book-ticket" @click="Book()">Book</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="textAlign:center;fontWeight:bold;fontSize:24px;marginTop:50px" v-if="visible" ><span>{{ theater }}{{ time }}</span></div>
+      <div style="textAlign:center" v-if="visible">
+         <button class="big"><span>Ticket 1-45</span><br><span>Rs:120</span></button>
+         <button class="big"><span>Ticket 46-100</span><br><span>Rs:100</span></button>
+      </div>
+      <div class="ticket_main" v-if="visible">
+        <div class="seats">
+          <button
+            :key="seat"
+            v-for="seat in 100"
+            :id="seat"
+            @click="book(seat)"
+            style="background:black; color:white ; outline:none"
+          >
+            {{ seat }}
+          </button>
+        </div>
         <button
-          :key="seat"
-          v-for="seat in 100"
-          :id="seat"
-          @click="book(seat)"
-          style="background:black; color:white ; outline:none"
+          v-if="tick_total >= tick_no"
+          style="
+        width: 200px;
+        margin-left: 42%;
+    "
+          @click="confirm()"
         >
-          {{ seat }}
+          Pay Rs:{{ total }}
         </button>
       </div>
-      <button
-        v-if="tick_total >= tick_no"
-        style="
-      width: 200px;
-      margin-left: 42%;
-  "
-        @click="confirm()"
-      >
-        Pay Rs:{{ total }}
-      </button>
-    </div>
-    <div class="model-holder" v-if="show_bill">
-      <div class="model">
-        <span>{{ theater | cut }}</span>
-        <table class="bill_table">
-          <thead>
-            <tr>
-              <th>Ticket(s)</th>
-              <th>No.of.tickets</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="tic">
-                <span v-for="ticket in tickets" :key="ticket">{{
-                  ticket | comma
-                }}</span>
-              </td>
-              <td class="tic">
-                <span>{{ tick_total }}</span>
-              </td>
-              <td class="tic">
-                <span>Rs:{{ total }}</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <hr style="borderTop:1px dashed grey" />
-        <table>
-          <tbody>
-            <tr>
-              <th style="width:100px;"></th>
-              <th style="width:200px;">
-                <span>SGST</span>
-              </th>
-              <td style="width:150px;" class="tic2">{{ tick_total }}x9</td>
-            </tr>
-            <tr>
-              <th style="width:180px"></th>
-              <th>
-                <span>CGST</span>
-              </th>
-              <td style="width:100px" class="tic2">{{ tick_total }}x9</td>
-            </tr>
-          </tbody>
-        </table>
-        <hr style="borderTop:1px dashed grey" />
-        <table>
-          <tbody>
-            <tr>
-              <th style="width:180px;"></th>
-              <th style="width:200px;">
-                <span>Total</span>
-              </th>
-              <td style="width:150px;" class="tic2">
-                Rs:{{ total | final_bill(tick_total) }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <hr style="borderTop:1px dashed grey"/>
-        <!-- <router-link :to="{ name: 'bill', params: { id:id,ticket:tickets } }"
-            > -->
-        <button class="final_pay" @click="pay_bill">
-          Pay Rs.{{ total | final_bill(tick_total) }}
-        </button>
-        <!-- </router-link> -->
+      <div class="model-holder" v-if="show_bill">
+        <div class="model">
+          <span>{{ theater | cut }}</span>
+          <table class="bill_table">
+            <thead>
+              <tr>
+                <th>Ticket(s)</th>
+                <th>No.of.tickets</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="tic">
+                  <span v-for="ticket in tickets" :key="ticket">{{
+                    ticket | comma
+                  }}</span>
+                </td>
+                <td class="tic">
+                  <span>{{ tick_total }}</span>
+                </td>
+                <td class="tic">
+                  <span>Rs:{{ total }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <hr style="borderTop:1px dashed grey" />
+          <table>
+            <tbody>
+              <tr>
+                <th style="width:100px;"></th>
+                <th style="width:200px;">
+                  <span>SGST</span>
+                </th>
+                <td style="width:150px;" class="tic2">{{ tick_total }}x9</td>
+              </tr>
+              <tr>
+                <th style="width:180px"></th>
+                <th>
+                  <span>CGST</span>
+                </th>
+                <td style="width:100px" class="tic2">{{ tick_total }}x9</td>
+              </tr>
+            </tbody>
+          </table>
+          <hr style="borderTop:1px dashed grey" />
+          <table>
+            <tbody>
+              <tr>
+                <th style="width:180px;"></th>
+                <th style="width:200px;">
+                  <span>Total</span>
+                </th>
+                <td style="width:150px;" class="tic2">
+                  Rs:{{ total | final_bill(tick_total) }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <hr style="borderTop:1px dashed grey"/>
+          
+          <button class="final_pay" @click="pay_bill">
+            Pay Rs.{{ total | final_bill(tick_total) }}
+          </button>
+          
+        </div>
       </div>
     </div>
-  </div>
+    
+</div>
 </template>
 
 <script>
+import Header from "./Header";
 export default {
+  components:{
+    Header
+  },
   data() {
     return {
       id: this.$route.params.id,
@@ -242,33 +241,33 @@ export default {
       let d = new Date();
       let e = new Date(new Date().getTime() + 3600000 * 24);
       let f = new Date(new Date().getTime() + 3600000 * 48);
-      console.log(this.show_date);
-      // this.show_date=d.toString().slice(0,15);
+
 
       for (let i = this.show_date; i < this.show_date + 3; i++) {
-        console.log(i.toString(), d.toString().slice(8, 10));
         if (i.toString() == d.toString().slice(8, 10)) {
           this.show_date = d.toString().slice(0, 15);
-          // this.show_date1 = d.toString().slice(0, 15);
+
         }
         if (i.toString() == e.toString().slice(8, 10)) {
           this.show_date = e.toString().slice(0, 15);
-          // this.show_date1 = e.toString().slice(0, 15);
+
         }
         if (i.toString() == f.toString().slice(8, 10)) {
           this.show_date = f.toString().slice(0, 15);
-          // this.show_date1 = f.toString().slice(0, 15);
+ 
         }
       }
-      console.log(this.show_date)
+
     },
     pay_bill: function() {
       this.show_bill=false
       this.bill = true;
       this.Day();
+      var otpGenerator = require("otp-generator");
+          let unique_id = otpGenerator.generate(12);
       for (let i = 1; i <= 100; i++) {
         if (document.getElementById(i).style.background === "lightgreen") {
-          var otpGenerator = require("otp-generator");
+          // var otpGenerator = require("otp-generator");
           let key = otpGenerator.generate(12);
           console.log(i, this.id, this.theater, this.time, this.show_date, key);
           this.$http
@@ -278,12 +277,14 @@ export default {
               theater: this.theater,
               time: this.time,
               date: this.show_date,
-              key: key
+              key: key,
+              id:unique_id,
+              mail:localStorage.getItem("mail")
             })
             .then(data => {
               console.log(data);
-              document.getElementById(i).style.background = "lightblue";
-              document.getElementById(i).style.color = "black";
+              // document.getElementById(i).style.background = "lightblue";
+              // document.getElementById(i).style.color = "black";
               let bill={
                 id:this.id,
                 movie:this.data.title,
@@ -330,7 +331,7 @@ export default {
       this.dates = [
         { top: date, bottom: "TODAY", id: 101 },
         { top: date + 1, bottom: "TOM", id: 102 },
-        { top: date + 2, bottom: "SAT", id: 103 }
+        { top: date + 2, bottom: "SUN", id: 103 }
       ];
     },
     verify: async function() {
@@ -378,7 +379,22 @@ export default {
     Book: function() {
       this.visible = true;
       this.verify();
-      console.log(this.show_date, this.theater, this.time, this.tick_no);
+      // console.log(this.show_date, this.theater, this.time, this.tick_no);
+    },
+    check:function(time){
+      this.Day();
+      
+      let a=new Date()
+      // console.log(a.toString().slice())
+      if((this.show_date==a.toString().slice(0,15))){
+        console.log(a.toString().slice(16,24),time,a.toString().slice(16,24)==time)
+        if((a.toString().slice(16,24)<time)){
+          return 1
+        }
+        return 0
+      }
+      else return 1
+
     }
   },
   filters: {
@@ -420,7 +436,6 @@ export default {
     this.Date();
     this.Title();
     this.Day();
-    console.log("hi")
   },
   mounted: function() {
     document.getElementById("101").style.background = "pink";
