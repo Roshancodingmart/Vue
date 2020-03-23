@@ -6,13 +6,13 @@ var app = express()
 app.use(cors())
 const port = 3005;
 
-
+const signupRoute = require("./Route/signupRoute");
+const signinRoute = require("./Route/signinRoute");
 const ageRoute = require("./Route/ageRoute");
 const bmiRoute = require("./Route/bmiRoute");
 const ticketRoute = require("./Route/ticketRoute");
 const getTicketRoute = require("./Route/getTicketRoute");
-
-
+const previousTicketRoute = require("./Route/previousTicketRoute");
 
 app.use(bodyParser.json());
 app.use(
@@ -43,7 +43,11 @@ app.listen(port, () => {
   console.log(`App running on port ${port}.`);
 });
 
+
+app.use("/signup",signupRoute)
+app.use("/signin",signinRoute)
 app.use("/age",ageRoute);
 app.use("/bmi",bmiRoute);
 app.use("/ticket",ticketRoute);
 app.use("/getTicket",getTicketRoute);
+app.use("/previousTicket",previousTicketRoute);
