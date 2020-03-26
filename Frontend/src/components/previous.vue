@@ -2,6 +2,28 @@
   <div>
     <Header />
 <div style="textAlign:center;fontSize:32px;marginTop:80px">Previously Booked Movies</div>
+<span v-if="cups.length>0" class="pre_movie_sub_title">Upcoming Movies</span>
+<div class="pmholder">
+  <div v-for="cup in cups" :key="cup" style="height:200px" class="previous_ticket">
+          <div style="textAlign:center">
+            <span>{{ cup.theater | cut }}</span>
+          </div>
+          <div class="pre_movie_title">{{ cup.movie }}</div>
+          <div
+            style="display:flex;justifyContent:space-between;fontSize:12px;marginTop:10px"
+          >
+            <div>{{ cup.date }}</div>
+            {{ cup.show }}
+          </div>
+          <div style="fontSize:12px;marginTop:10px">
+            seat no(s)<span :key="seat" v-for="seat in cup.ticket">{{
+              seat | comma(cup.ticket)
+            }}</span>
+          </div>
+          <div style="textAlign:center;marginTop:20px"><button class="pre-cancel" @click="cancel(cup)">cancel</button></div>
+        </div>
+</div>
+<span v-if="input.length>0" class="pre_movie_sub_title">Finished Movies</span>
     <div v-if="array.length > 0" class="pmholder">
       
       <div v-for="inp in input" :key="inp" class="previous_ticket">
@@ -36,7 +58,8 @@ export default {
       datas: "",
       array: [],
       output: [],
-      input: []
+      input: [],
+      cups:[]
     };
   },
   methods: {
@@ -96,9 +119,9 @@ export default {
               container.push(seat);
               this.output = container;
             }
-            console.log(j);
+            // console.log(j);
             let movie = await this.getMovieName(this.datas[j].movie);
-            console.log(movie);
+            // console.log(movie);
             user = {
               movie: movie,
               theater: this.datas[j].theater,
@@ -106,20 +129,67 @@ export default {
               date: this.datas[j].date,
               ticket: this.output[i]
             };
-            // console.log(user)
             break;
           }
         }
+        let a = user.date.split(" ")
+        let months=["Jan","Feb","Mar","Apr","May"]
+        let month = [0,1,2,3,4,5,6,7,8,9,10,11]
+        // console.log(a)
+        // console.log(parseInt(a[3]),month[months.indexOf(a[1])],parseInt(a[2]))
+        // console.log(user.date,user.show)
+        let f,g;
+        if(user.show=="10:30 PM"){
+          f=10
+          g=30
+        }
+        else if(user.show=="2:30 PM"){
+          f=2
+          g=30
+        }
+        else if(user.show=="6:30 PM"){
+          f=6
+          g=30
+        }
+        console.log(parseInt(a[3]),month[months.indexOf(a[1])],parseInt(a[2]),f,g,0)
+        let d=new Date();
+        let e = new Date(parseInt(a[3]),month[months.indexOf(a[1])],parseInt(a[2]))
+        console.log(d,e)
+        if(e<d)
         this.input.push(user);
+        else
+        this.cups.push(user)
       }
-      console.log(this.input);
-      // this.merge()
+      // console.log(this.input);
+      console.log(this.cup)
     },
     merge: function() {
       for (let i = 0; i < this.array.length; i++) {
         this.output[i].push(this.input[i]);
       }
-      console.log(this.output);
+    },
+    cancel:async function(cup){
+      if(confirm("Are you sure! Do you really want to cancel your ticket?")){
+        let pre_movie =await this.getMovieId(cup.movie)
+        for(let i=0;i<cup.ticket.length;i++){
+          this.cancel_ticket(cup.ticket[i],pre_movie,cup)
+        }
+      }
+    },
+    getMovieId:async function(movie){
+      let url="https://cors-anywhere.herokuapp.com/https://www.themoviedb.org/search/trending?language=en-US&query=" +
+        movie;
+      let response = await fetch(url);
+      let data = await response.json();
+      return data.results[0].id
+    },
+    cancel_ticket:async function(seat,movie,cup){
+      console.log(seat,movie,cup)
+      this.$http.post("http://localhost:3005/cancelTicket",{seat:seat,movie:movie,theater:cup.theater,show:cup.show,date:cup.date,user:localStorage.getItem("mail")}).then(data=>{
+        if(data.body=="Cancellation Successful"){
+        window.location.reload(false)
+        }
+      })
     }
   },
   filters: {
@@ -166,5 +236,25 @@ export default {
   flex-wrap: wrap;
   width: 100%;
   padding: 20px;
+}
+.pre-cancel{
+  height: 25px;
+  width: 80px;
+  background: red;
+  color: white;
+  border:none;
+  border-radius: 2px;
+  font-size: 12px;
+  font-weight: bolder;
+  outline-width: 0;
+}
+.pre-cancel:hover{
+background: rgb(219, 3, 3);
+outline-width: 0;
+}
+.pre_movie_sub_title{
+  font-size: 18px;
+  font-weight: bolder;
+  margin: 50px;
 }
 </style>

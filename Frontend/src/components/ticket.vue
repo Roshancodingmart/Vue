@@ -331,7 +331,7 @@ export default {
       this.dates = [
         { top: date, bottom: "TODAY", id: 101 },
         { top: date + 1, bottom: "TOM", id: 102 },
-        { top: date + 2, bottom: "SUN", id: 103 }
+        { top: date + 2, bottom: "DaT", id: 103 }
       ];
     },
     verify: async function() {
