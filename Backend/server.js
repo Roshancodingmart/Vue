@@ -13,6 +13,7 @@ const bmiRoute = require("./Route/bmiRoute");
 const ticketRoute = require("./Route/ticketRoute");
 const getTicketRoute = require("./Route/getTicketRoute");
 const previousTicketRoute = require("./Route/previousTicketRoute");
+const cancelTicketRoute = require("./Route/cancelTicketRoute");
 
 app.use(bodyParser.json());
 app.use(
@@ -51,3 +52,4 @@ app.use("/bmi",bmiRoute);
 app.use("/ticket",ticketRoute);
 app.use("/getTicket",getTicketRoute);
 app.use("/previousTicket",previousTicketRoute);
+app.use("/cancelTicket",cancelTicketRoute);
